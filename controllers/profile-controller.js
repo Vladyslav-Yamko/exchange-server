@@ -29,7 +29,22 @@ const profileController = {
 		await User.findOneAndUpdate({ email: user.email }, filteredUF);
 
 		logger.info('User updated.');
-		response.status(200).json({ message: 'User updated.' });
+		response.status(201).json({ message: 'User updated.' });
+	},
+	getInfo: async (request, response, next) => {
+		const authHeader = request.headers.authorization;
+		let user;
+		try {
+			user = await decodeAuthHeaderJWT(authHeader);
+		} catch (err) {
+			response.status(404).send('Non existing user.');
+		}
+		const { id } = request.params;
+
+		const foundUser = await User.findById(id, '-password');
+
+		logger.info('User updated.');
+		response.status(200).json(foundUser.toObject({ getters: true }));
 	},
 };
 export default profileController;

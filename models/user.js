@@ -10,6 +10,8 @@ const userSchema = new Schema({
 	age: { type: String },
 	city: { type: String },
 	country: { type: String },
+	euro: { type: Number },
+	usd: { type: Number },
 });
 const User = mongoose.model('User', userSchema);
 
