@@ -27,7 +27,9 @@ const authController = {
 			logger.error('Email and password are required.', {
 				at: new Error(),
 			});
-			response.status(400).send('Email and password are required.');
+			return response
+				.status(400)
+				.send('Email and password are required.');
 		}
 
 		const existingUser = await User.findOne({ email });
@@ -36,7 +38,7 @@ const authController = {
 			logger.error('Email already exists.', {
 				at: new Error(),
 			});
-			response.status(400).send('Email already exists.');
+			return response.status(400).send('Email already exists.');
 		}
 
 		const hashedPassword = await bcrypt.hash(password, +process.env.SALT);
@@ -54,11 +56,11 @@ const authController = {
 			logger.error('Registration of user failed.', {
 				at: new Error(),
 			});
-			response.status(500).send('Registration of user failed.');
+			return response.status(500).send('Registration of user failed.');
 		}
 
 		logger.info('User registered.');
-		response.status(201).json(registeredUser);
+		return response.status(201).json(registeredUser);
 	},
 	login: async (request, response, next) => {
 		const errors = validationResult(request);
@@ -82,7 +84,9 @@ const authController = {
 			logger.error('Email and password are required.', {
 				at: new Error(),
 			});
-			response.status(400).send('Email and password are required.');
+			return response
+				.status(400)
+				.send('Email and password are required.');
 		}
 
 		const existingUser = await User.findOne({ email });
@@ -91,7 +95,7 @@ const authController = {
 			logger.error('Invalid credentials.', {
 				at: new Error(),
 			});
-			response.status(400).send('Invalid credentials.');
+			return response.status(400).send('Invalid credentials.');
 		}
 
 		const passwordMatch = await bcrypt.compare(
@@ -103,7 +107,7 @@ const authController = {
 			logger.error('Invalid credentials.', {
 				at: new Error(),
 			});
-			response.status(401).send('Invalid credentials.');
+			return response.status(401).send('Invalid credentials.');
 		}
 
 		try {
@@ -119,7 +123,7 @@ const authController = {
 			logger.error('Login failed.\n' + JSON.stringify(err), {
 				at: new Error(),
 			});
-			response.status(500).send('Login failed.');
+			return response.status(500).send('Login failed.');
 		}
 	},
 };
